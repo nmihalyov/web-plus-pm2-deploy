@@ -1,21 +1,21 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import {
-  Request,
-  Response,
-  NextFunction,
+    NextFunction,
+    Request,
+    Response,
 } from 'express';
-import User from '../models/user';
-import { JWT_SECRET } from '../config';
+import jwt from 'jsonwebtoken';
+import { JWT_PRIVATE_KEY } from '../config';
 import BadRequestError from '../errors/bad-request-error';
-import NotFoundError from '../errors/not-found-error';
 import ConflictError from '../errors/conflict-error';
+import NotFoundError from '../errors/not-found-error';
+import User from '../models/user';
 
 const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+      const token = jwt.sign({ _id: user._id }, JWT_PRIVATE_KEY);
       return res
         .cookie('jwt', token, {
 
@@ -85,10 +85,6 @@ const updateUserAvatar = (
 ) => updateUserData(req, res, next);
 
 export {
-  login,
-  updateUserInfo,
-  updateUserAvatar,
-  createUser,
-  getUser,
-  getCurrentUser,
+    createUser, getCurrentUser, getUser, login, updateUserAvatar, updateUserInfo
 };
+
